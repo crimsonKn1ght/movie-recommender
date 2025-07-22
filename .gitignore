@@ -1,0 +1,4 @@
+# Ignore the ml-100k dataset zip file (It get downloaded automatically)
+/ml-100k.zip
+# Ignore the ml-100k dataset directory (It get extracted automatically)
+/ml-100k
