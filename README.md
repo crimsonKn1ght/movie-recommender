@@ -115,3 +115,5 @@ Feel free to:
 MIT License - Feel free to use and modify as needed.
 
 ---
+
+*Built with React, Tailwind CSS, and ❤️ for machine learning*

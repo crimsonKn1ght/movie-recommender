@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Star, Play, TrendingUp, Brain, BarChart3, Users, Film } from 'lucide-react';
 
 const AdvancedMovieRecommender = () => {
