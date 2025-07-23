@@ -42,6 +42,25 @@ This project demonstrates three state-of-the-art recommendation algorithms:
    npm start
    ```
 
+## 🐳 Run with Docker
+
+You can also run the application using Docker.
+
+Build the Docker image (from the root directory):
+
+```bash
+docker build -t movie-recommender .
+```
+Run the container:
+
+```bash
+docker run -p 3000:3000 movie-recommender
+```
+
+Access the app:
+
+Open your browser and go to `http://localhost:3000`
+
 ## 💻 Usage
 
 1. **Select Algorithm:** Choose between SVD, NMF, or Neural CF
