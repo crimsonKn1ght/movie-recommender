@@ -1,0 +1,4 @@
+# Dev/test dependencies (runtime deps live in requirements.txt).
+-r requirements.txt
+pytest>=7
+httpx>=0.23  # required by fastapi.testclient.TestClient

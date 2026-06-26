@@ -48,5 +48,6 @@ reference.
 ## Test
 
 ```bash
+pip install -r requirements-dev.txt   # pytest + httpx (for TestClient)
 AUTO_TRAIN_ON_STARTUP=false pytest tests/
 ```
