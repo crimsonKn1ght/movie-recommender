@@ -55,14 +55,20 @@ volume so subsequent starts are instant.
 
 ## 🛠️ Quick Start (local dev)
 
-**Backend** (Python 3.10–3.12):
+**Backend** — Python 3.10–3.12 recommended (3.13/3.14 also work for SVD + NMF;
+the optional Neural CF extra needs a TensorFlow-supported version, currently ≤3.12):
 
 ```bash
 pip install -e core            # ML engine (add "core[neural]" for TensorFlow)
 pip install -r backend/requirements.txt
 cd backend
-uvicorn main:app --reload      # http://localhost:8000
+python -m uvicorn main:app --reload    # http://localhost:8000
 ```
+
+> Use `python -m uvicorn` rather than a bare `uvicorn`. The module form always
+> uses your current interpreter and avoids a stale `uvicorn.exe` launcher left
+> behind by a previous Python install (a common "cannot find the file specified"
+> error after upgrading Python).
 
 **Frontend** (Node 18+), in a second terminal:
 
@@ -74,6 +80,28 @@ npm start                      # http://localhost:3000
 
 The frontend's `package.json` sets `"proxy": "http://localhost:8000"`, so the
 browser calls `/api/*` on the same origin and CRA forwards them to the backend.
+
+## 🎬 Using the app
+
+1. Open the UI — <http://localhost:3000> (local dev) or <http://localhost:8080>
+   (Docker). The three algorithm cards (SVD, NMF, Neural CF) show each model's
+   status and, once trained, its RMSE/MAE.
+2. The backend auto-trains **SVD** and **NMF** on startup, so they flip to
+   **Ready** within a few seconds (first run also downloads the dataset). Click
+   **Train All Models** to retrain, or to train Neural CF on demand — the status
+   badges and progress panel update live while training runs.
+3. Choose a **User ID** and how many **recommendations** you want from the
+   dropdowns.
+4. Click an algorithm card to switch methods. Recommendations refresh instantly,
+   each showing the movie's title, year, genres, average rating, and the model's
+   **predicted rating** for that user.
+5. The **Model Performance Comparison** panel at the bottom contrasts RMSE/MAE
+   across the trained models (lower is better).
+
+> **Neural CF** shows as *Unavailable* when the backend has no TensorFlow (e.g.
+> Python 3.13+). SVD and NMF work regardless. To enable Neural CF, run the
+> backend on Python ≤3.12 with `pip install -e "core[neural]"`, or use the Docker
+> backend image.
 
 ## 🔌 API
 
