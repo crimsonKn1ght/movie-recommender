@@ -1,0 +1,29 @@
+# Run the full stack locally:
+#   docker compose up --build
+# Frontend:  http://localhost:8080
+# Backend:   http://localhost:8000  (Swagger UI at /docs)
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      MOVIELENS_DATA_DIR: /data
+      AUTO_TRAIN_ON_STARTUP: "true"
+      ALLOWED_ORIGINS: "http://localhost:8080,http://localhost:3000"
+    volumes:
+      - movielens-data:/data
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+
+volumes:
+  movielens-data:

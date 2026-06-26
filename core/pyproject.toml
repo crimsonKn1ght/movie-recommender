@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "movie-recommender-core"
+version = "0.1.0"
+description = "Core ML recommendation engine (SVD, NMF, Neural CF) over MovieLens 100K."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "requests",
+]
+
+[project.optional-dependencies]
+# Neural Collaborative Filtering. TensorFlow is heavy and only supports
+# specific Python versions, so it is opt-in.
+neural = ["tensorflow"]
+
+[project.scripts]
+movie-recommender-demo = "recommender.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["recommender*"]

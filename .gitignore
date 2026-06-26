@@ -1,4 +1,19 @@
-# Ignore the ml-100k dataset zip file (It get downloaded automatically)
-/ml-100k.zip
-# Ignore the ml-100k dataset directory (It get extracted automatically)
-/ml-100k
+# MovieLens dataset (downloaded automatically at runtime)
+ml-100k.zip
+ml-100k/
+**/ml-100k.zip
+**/ml-100k/
+data/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+
+# Node (frontend)
+node_modules/
+/frontend/build/

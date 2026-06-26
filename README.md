@@ -1,138 +1,134 @@
 # Advanced Movie Recommendation System
 
-A comprehensive movie recommendation system implementing multiple machine learning algorithms with an interactive React frontend.
+A full-stack movie recommender built around three machine-learning algorithms
+(SVD, NMF, Neural Collaborative Filtering) trained on the real **MovieLens 100K**
+dataset. The recommendation engine, the API, and the UI are cleanly separated.
 
-## 🎬 Overview
+## 🏗️ Architecture
 
-This project demonstrates three state-of-the-art recommendation algorithms:
-- **SVD Matrix Factorization**: Decomposes user-item matrix using Singular Value Decomposition
-- **NMF (Non-negative Matrix Factorization)**: Finds interpretable patterns in non-negative data
-- **Neural Collaborative Filtering**: Deep learning approach with embeddings for complex interactions
+The project is split into three layers so the **core ML logic stays independent**
+of any web framework:
 
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js (14+ recommended)
-- npm or yarn
-
-### Installation
-
-1. **Create React App:**
-   ```bash
-   npx create-react-app movie-recommender
-   cd movie-recommender
-   ```
-
-2. **Install Dependencies:**
-   ```bash
-   npm install lucide-react
-   ```
-
-3. **Add Tailwind CSS:**
-   Add this to `public/index.html` in the `<head>` section:
-   ```html
-   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-   ```
-
-4. **Replace App.js:**
-   Replace the contents of `src/App.js` with the React component code
-
-5. **Start the Application:**
-   ```bash
-   npm start
-   ```
-
-## 🐳 Run with Docker
-
-You can also run the application using Docker.
-
-Build the Docker image (from the root directory):
-
-```bash
-docker build -t movie-recommender .
-```
-Run the container:
-
-```bash
-docker run -p 3000:3000 movie-recommender
+```text
+┌─────────────────────────┐     /api/* (same-origin)     ┌──────────────────────────┐
+│        frontend         │  ───────────────────────►    │         backend          │
+│  React (CRA) + nginx    │   ◄───────────────────────   │   FastAPI (REST API)     │
+│  calls /api/* via proxy │        JSON responses        │  app/api/* + registry    │
+└─────────────────────────┘                              └────────────┬─────────────┘
+                                                                       │ imports
+                                                                       ▼
+                                                          ┌──────────────────────────┐
+                                                          │           core           │
+                                                          │  recommender/ (SVD, NMF, │
+                                                          │  Neural CF) — no web deps │
+                                                          └──────────────────────────┘
 ```
 
-Access the app:
-
-Open your browser and go to `http://localhost:3000`
-
-## 💻 Usage
-
-1. **Select Algorithm:** Choose between SVD, NMF, or Neural CF
-2. **Pick User:** Select a user ID (1-20) 
-3. **Set Recommendations:** Choose number of movies to recommend (3-15)
-4. **Train Models:** Click "Train All Models" to see realistic training simulation
-5. **Compare Results:** Switch between algorithms to see different recommendations
-
-## 🔧 Features
-
-- **Interactive Training Simulation**: Watch models train with realistic progress bars
-- **Algorithm Comparison**: See how different methods produce different recommendations
-- **Performance Metrics**: View RMSE and MAE for each trained model
-- **Responsive Design**: Works on desktop and mobile devices
-- **Real-time Updates**: Dynamic recommendations based on selected parameters
-
-## 📊 Algorithms Explained
-
-### SVD Matrix Factorization
-- Decomposes the user-item rating matrix into lower-dimensional factors
-- Best for: General collaborative filtering with good accuracy
-- Time Complexity: O(k * iterations * non-zero entries)
-
-### Non-negative Matrix Factorization (NMF)  
-- Constrains factors to be non-negative for interpretability
-- Best for: When you need explainable recommendations
-- Time Complexity: O(k * iterations * matrix size)
-
-### Neural Collaborative Filtering
-- Uses deep learning with user/item embeddings
-- Best for: Capturing complex, non-linear user-item interactions
-- Time Complexity: O(epochs * batch_size * network depth)
-
-## 📁 File Structure
-
-```
+```text
 movie-recommender/
-├── public/
-│   └── index.html          # Tailwind CSS link added here
-├── src/
-│   ├── App.js              # Main React component
-│   └── index.js            # Entry point
-└── README.md               # This file
+├── core/        # the ML engine — installable Python package (the "main logic")
+├── backend/     # FastAPI service that wraps the engine and exposes REST endpoints
+├── frontend/    # React (Create React App) UI that calls the backend
+└── docker-compose.yml
 ```
 
-## 🎯 Demo Data
+- **`core/`** — `AdvancedMovieRecommender` and the dataset loader. Pure Python; no
+  FastAPI, no React. Runnable on its own via `python -m recommender`.
+  See [core/README.md](core/README.md).
+- **`backend/`** — FastAPI app. Trains and caches models in memory, exposes
+  `/api/*`. Stateless (no database). See [backend/README.md](backend/README.md).
+- **`frontend/`** — the React UI. It no longer holds any fake data; every movie,
+  metric, and recommendation comes from the backend.
 
-The application uses simulated MovieLens-style data:
-- **Users**: 20 simulated users
-- **Movies**: 10 popular movies with ratings
-- **Recommendations**: Algorithm-specific suggestions with confidence scores
+## 🚀 Quick Start (Docker — recommended)
 
-## 🔄 Real Implementation
+```bash
+docker compose up --build
+```
 
-For a production system using actual MovieLens data, see the included Python implementation (`paste.txt`) which:
-- Downloads real MovieLens 100K dataset
-- Implements actual SVD, NMF, and Neural CF models
-- Provides real training, evaluation, and recommendations
-- Requires: pandas, scikit-learn, tensorflow, numpy
+- Frontend: <http://localhost:8080>
+- Backend API + Swagger docs: <http://localhost:8000/docs>
 
-## 🤝 Contributing
+On first start the backend downloads MovieLens 100K and trains the SVD + NMF
+models in the background (a few seconds). The dataset is cached in a Docker
+volume so subsequent starts are instant.
 
-Feel free to:
-- Add new recommendation algorithms
-- Improve the UI/UX
-- Add more evaluation metrics
-- Implement real data integration
+## 🛠️ Quick Start (local dev)
+
+**Backend** (Python 3.10–3.12):
+
+```bash
+pip install -e core            # ML engine (add "core[neural]" for TensorFlow)
+pip install -r backend/requirements.txt
+cd backend
+uvicorn main:app --reload      # http://localhost:8000
+```
+
+**Frontend** (Node 18+), in a second terminal:
+
+```bash
+cd frontend
+npm install
+npm start                      # http://localhost:3000
+```
+
+The frontend's `package.json` sets `"proxy": "http://localhost:8000"`, so the
+browser calls `/api/*` on the same origin and CRA forwards them to the backend.
+
+## 🔌 API
+
+| Method | Path | Description |
+| --- | --- | --- |
+| GET | `/api/health`, `/api/ready` | Liveness/readiness probes (unauthenticated) |
+| GET | `/api/algorithms` | Algorithms with status and current RMSE/MAE |
+| GET | `/api/users` | Valid user IDs from the dataset |
+| GET | `/api/movies?limit=&search=` | Movie catalog (title, year, genres, avg rating) |
+| POST | `/api/train` | Train models — body `{"algorithm": "all"\|"SVD"\|"NMF"\|"Neural"}` |
+| GET | `/api/train/status` | Per-model training status + metrics |
+| GET | `/api/evaluate?algorithm=` | RMSE/MAE on the held-out test set |
+| GET | `/api/recommend?user_id=&algorithm=&n=` | Recommendations for a user |
+
+Interactive docs are served at `/docs` (Swagger) and `/redoc`.
+
+## ⚙️ Configuration
+
+| Variable | Default | Applies to | Purpose |
+| --- | --- | --- | --- |
+| `MOVIELENS_DATA_DIR` | `.` | core/backend | Where `ml-100k/` is downloaded/read |
+| `AUTO_TRAIN_ON_STARTUP` | `true` | backend | Train SVD+NMF in the background at startup |
+| `ALLOWED_ORIGINS` | `http://localhost:3000` | backend | Comma-separated CORS origins |
+| `SVD_COMPONENTS` / `NMF_COMPONENTS` | `50` | backend | Matrix-factorization dimensionality |
+| `NEURAL_EMBEDDING_SIZE` / `NEURAL_EPOCHS` | `50` / `20` | backend | Neural CF hyperparameters |
+| `REACT_APP_API_URL` | `""` (same origin) | frontend | Override backend base URL at build time |
+
+## 📊 Algorithms
+
+- **SVD Matrix Factorization** — `TruncatedSVD` on the mean-centered user-item
+  matrix. Good general-purpose collaborative filtering.
+- **NMF** — non-negative factorization; more interpretable factors.
+- **Neural Collaborative Filtering** — user/item embeddings + dense layers
+  (TensorFlow). Optional and **lazy**: it is only trained on request, and only if
+  TensorFlow is installed (`pip install -e "core[neural]"`). The UI marks it
+  *Unavailable* otherwise.
+
+## 🧪 Tests
+
+```bash
+cd backend && pytest tests/      # backend smoke tests (no dataset download)
+cd frontend && CI=true npm test  # frontend component test
+```
+
+## 📝 Notes
+
+- The engine computes user means over a zero-filled user-item matrix (inherited
+  from the original implementation), so reported RMSE is higher than the headline
+  numbers a fully tuned recommender would reach. Tuning model quality is tracked
+  as a separate improvement and intentionally left out of this restructure.
 
 ## 📄 License
 
-MIT License - Feel free to use and modify as needed.
+MIT License — see [LICENSE](LICENSE).
 
 ---
 
-*Built with React, Tailwind CSS, and ❤️ for machine learning*
+*Built with React, FastAPI, scikit-learn, TensorFlow, and ❤️ for machine learning*
