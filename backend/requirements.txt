@@ -1,0 +1,5 @@
+# Backend web layer. The core engine is installed separately:
+#   pip install -e ../core          (SVD + NMF)
+#   pip install -e "../core[neural]"  (also TensorFlow for Neural CF)
+fastapi>=0.110
+uvicorn[standard]>=0.27
