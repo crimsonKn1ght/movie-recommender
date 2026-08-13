@@ -1,4 +1,4 @@
-"""GET /api/movies — the real MovieLens movie catalog."""
+"""GET /api/movies: the real MovieLens movie catalog."""
 
 from fastapi import APIRouter, Depends, Query
 

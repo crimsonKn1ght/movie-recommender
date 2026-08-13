@@ -1,4 +1,4 @@
-"""GET /api/users — valid user IDs from the dataset."""
+"""GET /api/users: valid user IDs from the dataset."""
 
 from fastapi import APIRouter, Depends
 

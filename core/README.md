@@ -1,4 +1,4 @@
-# Movie Recommender — Core Engine
+# Movie Recommender: Core Engine
 
 The **main recommendation logic**, kept independent of any web framework. This
 package implements three algorithms over the MovieLens 100K dataset:

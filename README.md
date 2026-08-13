@@ -20,27 +20,27 @@ of any web framework:
                                                           ┌──────────────────────────┐
                                                           │           core           │
                                                           │  recommender/ (SVD, NMF, │
-                                                          │  Neural CF) — no web deps │
+                                                          │  Neural CF), no web deps  │
                                                           └──────────────────────────┘
 ```
 
 ```text
 movie-recommender/
-├── core/        # the ML engine — installable Python package (the "main logic")
+├── core/        # the ML engine: installable Python package (the "main logic")
 ├── backend/     # FastAPI service that wraps the engine and exposes REST endpoints
 ├── frontend/    # React (Create React App) UI that calls the backend
 └── docker-compose.yml
 ```
 
-- **`core/`** — `AdvancedMovieRecommender` and the dataset loader. Pure Python; no
+- **`core/`**: `AdvancedMovieRecommender` and the dataset loader. Pure Python; no
   FastAPI, no React. Runnable on its own via `python -m recommender`.
   See [core/README.md](core/README.md).
-- **`backend/`** — FastAPI app. Trains and caches models in memory, exposes
+- **`backend/`**: FastAPI app. Trains and caches models in memory, exposes
   `/api/*`. Stateless (no database). See [backend/README.md](backend/README.md).
-- **`frontend/`** — the React UI. It no longer holds any fake data; every movie,
+- **`frontend/`**: the React UI. It no longer holds any fake data; every movie,
   metric, and recommendation comes from the backend.
 
-## 🚀 Quick Start (Docker — recommended)
+## 🚀 Quick Start (Docker, recommended)
 
 ```bash
 docker compose up --build
@@ -55,7 +55,7 @@ volume so subsequent starts are instant.
 
 ## 🛠️ Quick Start (local dev)
 
-**Backend** — Python 3.10–3.12 recommended (3.13/3.14 also work for SVD + NMF;
+**Backend**: Python 3.10–3.12 recommended (3.13/3.14 also work for SVD + NMF;
 the optional Neural CF extra needs a TensorFlow-supported version, currently ≤3.12):
 
 ```bash
@@ -83,12 +83,12 @@ browser calls `/api/*` on the same origin and CRA forwards them to the backend.
 
 ## 🎬 Using the app
 
-1. Open the UI — <http://localhost:3000> (local dev) or <http://localhost:8080>
+1. Open the UI: <http://localhost:3000> (local dev) or <http://localhost:8080>
    (Docker). The three algorithm cards (SVD, NMF, Neural CF) show each model's
    status and, once trained, its RMSE/MAE.
 2. The backend auto-trains **SVD** and **NMF** on startup, so they flip to
    **Ready** within a few seconds (first run also downloads the dataset). Click
-   **Train All Models** to retrain, or to train Neural CF on demand — the status
+   **Train All Models** to retrain, or to train Neural CF on demand; the status
    badges and progress panel update live while training runs.
 3. Choose a **User ID** and how many **recommendations** you want from the
    dropdowns.
@@ -111,7 +111,7 @@ browser calls `/api/*` on the same origin and CRA forwards them to the backend.
 | GET | `/api/algorithms` | Algorithms with status and current RMSE/MAE |
 | GET | `/api/users` | Valid user IDs from the dataset |
 | GET | `/api/movies?limit=&search=` | Movie catalog (title, year, genres, avg rating) |
-| POST | `/api/train` | Train models — body `{"algorithm": "all"\|"SVD"\|"NMF"\|"Neural"}` |
+| POST | `/api/train` | Train models; body `{"algorithm": "all"\|"SVD"\|"NMF"\|"Neural"}` |
 | GET | `/api/train/status` | Per-model training status + metrics |
 | GET | `/api/evaluate?algorithm=` | RMSE/MAE on the held-out test set |
 | GET | `/api/recommend?user_id=&algorithm=&n=` | Recommendations for a user |
@@ -131,10 +131,10 @@ Interactive docs are served at `/docs` (Swagger) and `/redoc`.
 
 ## 📊 Algorithms
 
-- **SVD Matrix Factorization** — `TruncatedSVD` on the mean-centered user-item
+- **SVD Matrix Factorization**: `TruncatedSVD` on the mean-centered user-item
   matrix. Good general-purpose collaborative filtering.
-- **NMF** — non-negative factorization; more interpretable factors.
-- **Neural Collaborative Filtering** — user/item embeddings + dense layers
+- **NMF**: non-negative factorization; more interpretable factors.
+- **Neural Collaborative Filtering**: user/item embeddings + dense layers
   (TensorFlow). Optional and **lazy**: it is only trained on request, and only if
   TensorFlow is installed (`pip install -e "core[neural]"`). The UI marks it
   *Unavailable* otherwise.
@@ -155,7 +155,7 @@ cd frontend && CI=true npm test  # frontend component test
 
 ## 📄 License
 
-MIT License — see [LICENSE](LICENSE).
+MIT License. See [LICENSE](LICENSE).
 
 ---
 

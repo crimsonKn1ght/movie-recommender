@@ -2,8 +2,8 @@
 
 Owns a single :class:`AdvancedMovieRecommender`, trains models on demand, caches
 them for the life of the process, and exposes thread-safe accessors for the API
-layer. This is the backend equivalent of the documentation's model/builder layer
-— minus any database, since this service is intentionally stateless.
+layer. This is the backend equivalent of the documentation's model/builder layer,
+minus any database, since this service is intentionally stateless.
 
 Training is guarded by a re-entrant lock so the startup warm-up thread and an
 incoming ``POST /api/train`` request cannot corrupt shared state.
