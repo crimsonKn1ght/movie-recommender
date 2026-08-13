@@ -1,4 +1,4 @@
-"""GET /api/algorithms — list available algorithms and their current metrics."""
+"""GET /api/algorithms: list available algorithms and their current metrics."""
 
 from fastapi import APIRouter, Depends
 

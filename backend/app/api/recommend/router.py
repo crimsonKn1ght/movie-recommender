@@ -1,4 +1,4 @@
-"""GET /api/recommend — real recommendations from a trained model."""
+"""GET /api/recommend: real recommendations from a trained model."""
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 

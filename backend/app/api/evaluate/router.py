@@ -1,4 +1,4 @@
-"""GET /api/evaluate — RMSE/MAE for trained models on the held-out test set."""
+"""GET /api/evaluate: RMSE/MAE for trained models on the held-out test set."""
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 

@@ -290,7 +290,7 @@ const AdvancedMovieRecommender = () => {
               {currentModelStatus === 'unavailable'
                 ? 'This model is unavailable (TensorFlow not installed on the backend).'
                 : currentModelStatus === 'training'
-                ? 'Model is training — recommendations will appear when it is ready.'
+                ? 'Model is training; recommendations will appear when it is ready.'
                 : 'Model not trained yet. Click "Train All Models" to get started.'}
             </div>
           ) : loadingRecs ? (

@@ -1,4 +1,4 @@
-# Movie Recommender — Backend
+# Movie Recommender: Backend
 
 FastAPI service that wraps the [`core`](../core) recommendation engine and
 exposes it over REST. It is **stateless**: models are trained and cached in
@@ -23,12 +23,12 @@ backend/
 
 ## How it works
 
-- **Dynamic routing** — `router_loader.register_routes()` scans
+- **Dynamic routing**: `router_loader.register_routes()` scans
   `app/api/**/router.py`; the path under `app/api` becomes the URL prefix
   (`app/api/recommend/router.py` → `/api/recommend`). Add a new route group by
   dropping in a folder with a `router.py` that exposes an `APIRouter` named
   `router`; no edit to `main.py` required.
-- **Model registry** — `app/services/registry.py` owns a single
+- **Model registry**: `app/services/registry.py` owns a single
   `AdvancedMovieRecommender`. SVD/NMF are trained eagerly in a background thread
   at startup; Neural CF is trained lazily on `POST /api/train`. Training is
   guarded by a lock and progress is exposed via `GET /api/train/status` so the UI
